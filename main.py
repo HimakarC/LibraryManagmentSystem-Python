@@ -1,67 +1,44 @@
-class Book:
-    def __init__(self, title, author, available=True):
-        self.title = title
-        self.author = author
-        self.available = available
+import tkinter as tk
+from tkinter import messagebox
 
-class Library:
+class LMS(tk.Tk):
     def __init__(self):
+        super().__init__()
+        self.title("Library Management System")
+        self.geometry("400x300")
         self.books = []
+        self.label = tk.Label(self, text="Library Management System", font=("Helvetica", 16))
+        self.label.pack(pady=10)
+        self.title_label = tk.Label(self, text="Book Title:")
+        self.title_label.pack()
+        self.title_entry = tk.Entry(self)
+        self.title_entry.pack()
+        self.author_label = tk.Label(self, text="Author:")
+        self.author_label.pack()
+        self.author_entry = tk.Entry(self)
+        self.author_entry.pack()
+        self.add_button = tk.Button(self, text="Add Book", command=self.add_book)
+        self.add_button.pack(pady=10)
+        self.show_books_button = tk.Button(self, text="Show Books", command=self.show_books)
+        self.show_books_button.pack(pady=10)
+        self.quit_button = tk.Button(self, text="Quit", command=self.quit)
+        self.quit_button.pack()
+    def add_book(self):
+        title = self.title_entry.get()
+        author = self.author_entry.get()
+        if title and author:
+            self.books.append((title, author))
+            messagebox.showinfo("Success", "Book added to the library.")
+            self.title_entry.delete(0, tk.END)
+            self.author_entry.delete(0, tk.END)
+        else:
+            messagebox.showerror("Error", "Please enter both title and author.")
+    def show_books(self):
+        if not self.books:
+            messagebox.showinfo("No Books", "No books in the library.")
+        else:
+            book_list = "\n".join([f"{i + 1}. {book[0]} by {book[1]}" for i, book in enumerate(self.books)])
+            messagebox.showinfo("Books in Library", book_list)
 
-    def add_book(self, title, author):
-        book = Book(title, author)
-        self.books.append(book)
-        print("Book '{}' by {} added to the library.".format(title, author))
-
-    def search_book(self, title):
-        for book in self.books:
-            if book.title.lower() == title.lower():
-                if book.available:
-                    print("Book '{}' by {} is available.".format(book.title, book.author))
-                else:
-                    print("Book '{}' by {} is currently borrowed.".format(book.title, book.author))
-                return
-        print("Book '{}' not found in the library.".format(title))
-
-    def borrow_book(self, title):
-        for book in self.books:
-            if book.title.lower() == title.lower():
-                if book.available:
-                    book.available = False
-                    print("Book '{}' by {} is borrowed.".format(book.title, book.author))
-                else:
-                    print("Book '{}' is already borrowed.".format(book.title))
-                return
-        print("Book '{}' not found in the library.".format(title))
-
-    def return_book(self, title):
-        for book in self.books:
-            if book.title.lower() == title.lower():
-                if not book.available:
-                    book.available = True
-                    print("Book '{}' by {} is returned.".format(book.title, book.author))
-                else:
-                    print("Book '{}' is already available.".format(book.title))
-                return
-        print("Book '{}' not found in the library.".format(title))
-
-library = Library()
-
-N = int(input('Enter no.of times to ask the query: '))
-
-for j in range(N):
-    n = int(input('Enter\n 1) To add book to the Library\n 2) To search for the book\n 3) To borrow the book\n 4) To return the book\n'))
-
-    if n == 1:
-        s = input('Enter book name to add to the library: ')
-        name = input('Enter author name of the book: ')
-        library.add_book(s, name)
-    elif n == 2:
-        s = input('Enter book name to add to the library: ')
-        library.search_book(s)
-    elif n == 3:
-        s = input('Enter book name to add to the library: ')
-        library.borrow_book(s)
-    else:
-        s = input('Enter book name to add to the library: ')
-        library.return_book(s)
+app = LMS()
+app.mainloop()
